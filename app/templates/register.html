@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Create account — MFA Auth App{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Create your account</h1>
+  <p class="subtitle">You can turn on two-factor authentication afterwards from your dashboard.</p>
+
+  <form method="POST" action="{{ url_for('auth.register') }}" novalidate>
+    {{ form.hidden_tag() }}
+
+    <div class="field">
+      <label for="email">Email</label>
+      {{ form.email(id="email", autocomplete="email", autofocus=true) }}
+      {% for error in form.email.errors %}<div class="field-errors">{{ error }}</div>{% endfor %}
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      {{ form.password(id="password", type="password", autocomplete="new-password") }}
+      <div class="field-errors">
+        {% for error in form.password.errors %}{{ error }}<br>{% endfor %}
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="confirm_password">Confirm password</label>
+      {{ form.confirm_password(id="confirm_password", type="password", autocomplete="new-password") }}
+      {% for error in form.confirm_password.errors %}<div class="field-errors">{{ error }}</div>{% endfor %}
+    </div>
+
+    <div class="actions">
+      <button type="submit">Create account</button>
+    </div>
+  </form>
+
+  <div class="link-row">
+    Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a>
+  </div>
+</div>
+{% endblock %}

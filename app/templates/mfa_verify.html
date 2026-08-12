@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Verify code — MFA Auth App{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Enter your code</h1>
+  <p class="subtitle">Open your authenticator app and enter the current 6-digit code.</p>
+
+  <form method="POST" action="{{ url_for('mfa.verify') }}" novalidate>
+    {{ form.hidden_tag() }}
+
+    <div class="field">
+      <label for="code">Authentication code</label>
+      {{ form.code(id="code", class="otp-input", inputmode="numeric", pattern="[0-9]*", maxlength="6", autocomplete="one-time-code", autofocus=true) }}
+      {% for error in form.code.errors %}<div class="field-errors">{{ error }}</div>{% endfor %}
+    </div>
+
+    <div class="actions">
+      <button type="submit">Verify</button>
+    </div>
+  </form>
+
+  <div class="link-row">
+    Not you? <a href="{{ url_for('auth.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Cancel and log out</a>
+  </div>
+  <form id="logout-form" method="POST" action="{{ url_for('auth.logout') }}" style="display:none;">
+    {{ form.csrf_token }}
+  </form>
+</div>
+{% endblock %}

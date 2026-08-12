@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Set up MFA — MFA Auth App{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Set up two-factor authentication</h1>
+  <p class="subtitle">Scan this QR code with Google Authenticator, Authy, or 1Password, then enter the code it shows to confirm.</p>
+
+  <div class="qr-wrap">
+    <img src="{{ qr_data_uri }}" alt="QR code for MFA setup">
+  </div>
+
+  <div class="manual-key">{{ manual_secret }}</div>
+
+  <form method="POST" action="{{ url_for('mfa.setup') }}" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="field">
+      <label for="code">Enter the 6-digit code</label>
+      {{ form.code(id="code", class="otp-input", inputmode="numeric", pattern="[0-9]*", maxlength="6", autocomplete="one-time-code", autofocus=true) }}
+      {% for error in form.code.errors %}<div class="field-errors">{{ error }}</div>{% endfor %}
+    </div>
+
+    <div class="actions">
+      <button type="submit">Confirm and enable MFA</button>
+    </div>
+  </form>
+
+  <form method="POST" action="{{ url_for('mfa.cancel_setup') }}" style="margin-top:0.6rem;">
+    {{ form.csrf_token }}
+    <button type="submit" class="btn-secondary">Cancel</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — MFA Auth App{% endblock %}
+{% block content %}
+<div class="card dashboard-card">
+  <h1>Dashboard</h1>
+  <p class="subtitle">You are fully authenticated{{ " with two-factor authentication" if user.mfa_enabled else "" }}.</p>
+
+  <div class="status-row">
+    <span class="label">Email</span>
+    <span class="value">{{ user.email }}</span>
+  </div>
+  <div class="status-row">
+    <span class="label">Authentication state</span>
+    <span class="value badge badge-on">Fully authenticated</span>
+  </div>
+  <div class="status-row">
+    <span class="label">MFA status</span>
+    <span class="value badge {{ 'badge-on' if user.mfa_enabled else 'badge-off' }}">
+      {{ "Enabled" if user.mfa_enabled else "Disabled" }}
+    </span>
+  </div>
+  <div class="status-row">
+    <span class="label">Last login</span>
+    <span class="value">{{ user.last_login_at.strftime('%Y-%m-%d %H:%M UTC') if user.last_login_at else "This is your first login" }}</span>
+  </div>
+  <div class="status-row">
+    <span class="label">Account created</span>
+    <span class="value">{{ user.created_at.strftime('%Y-%m-%d') }}</span>
+  </div>
+
+  <div class="actions" style="margin-top:1.5rem;">
+    {% if user.mfa_enabled %}
+      <form method="POST" action="{{ url_for('mfa.disable') }}" onsubmit="return confirm('Disable two-factor authentication on this account?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn-danger">Disable MFA</button>
+      </form>
+    {% else %}
+      <a class="btn" href="{{ url_for('mfa.setup') }}" style="text-align:center; text-decoration:none; display:block;">Enable MFA</a>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('auth.logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn-secondary">Log out</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

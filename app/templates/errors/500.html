@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Something went wrong{% endblock %}
+{% block content %}
+<div class="card error-page">
+  <h1>500</h1>
+  <p>Something went wrong on our end. No sensitive details are shown here on purpose.</p>
+  <a class="btn" href="{{ url_for('auth.index') }}" style="display:inline-block; margin-top:1rem; text-decoration:none;">Go home</a>
+</div>
+{% endblock %}
